@@ -140,3 +140,12 @@ module Hashtbl (M : Hashtbl.S) (K : Element with type t = M.key) (V : Element) =
         g.contents ()
 
   end
+
+module String =
+  struct
+    
+    type t = string
+	  
+    let toHTML s = s
+
+  end

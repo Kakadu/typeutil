@@ -51,11 +51,14 @@ module Map (M : Map.S) (K : Element with type t = M.key) (V : Element) : Element
 (** Functor to provide hashtable to HTML generation *)
 module Hashtbl (M : Hashtbl.S) (K : Element with type t = M.key) (V : Element) : Element with type t = V.t M.t
 
-(** Functor to provide named pair toHTML generation. The first parameter sets components names *)
+(** Functor to provide named pair to HTML generation. The first parameter sets components names *)
 module NamedPair (N : sig val first : string val second : string end) (F : Element) (S : Element) : Element with type t = F.t * S.t
 
-(** Functor to provide unnamed pair toHTML generation. *)
+(** Functor to provide unnamed pair to HTML generation. *)
 module Pair (F : Element) (S : Element) : Element with type t = F.t * S.t
+
+(** Module to provide string to HTML generation. *)
+module String : Element with type t = string
 
 (** {2 Miscellaneous helpers} *)
 
