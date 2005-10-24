@@ -82,8 +82,17 @@ module NamedPair (N : sig val first : string val second : string end) (F : Viewa
 (** Viewing unnamed pairs *)
 module Pair (F : Viewable) (S : Viewable) : Viewable with type t = F.t * S.t
 
-(** Wrapper to make string viewable *)
+(** Wrapper to make builtin types viewable *)
 module String : Viewable with type t = string
+module Integer : Viewable with type t = int
+module Float : Viewable with type t = float
+module Bool : Viewable with type t = bool
+module Char : Viewable with type t = char
+module Unit : Viewable with type t = unit
+module Exn : Viewable with type t = exn
+module Int32 : Viewable with type t = int32
+module Int64 : Viewable with type t = int64
+module Nativeint : Viewable with type t = nativeint
 
 (** {2 Viewing helpers} *)
 

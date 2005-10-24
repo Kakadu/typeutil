@@ -112,6 +112,14 @@ module NamedPair (N : sig val first : string val second : string end) (F : Viewa
 
 module Pair = NamedPair (struct let first = "" let second = "" end)
 
+module Char =
+  struct
+
+    type t = char
+    let toString = String.make 1 
+
+  end
+
 module String =
   struct
 
@@ -119,3 +127,71 @@ module String =
     let toString x = x
 
   end
+
+module Integer =
+  struct
+
+    type t = int
+    let toString = string_of_int
+
+  end
+
+module Float =
+  struct
+
+    type t = float
+    let toString = string_of_float
+
+  end
+
+module Bool =
+  struct
+
+    type t = bool
+    let toString = string_of_bool
+
+  end
+
+module Exn =
+  struct
+
+    type t = exn
+    let toString = Printexc.to_string
+
+  end
+
+module Unit =
+  struct
+
+    type t = unit
+    let toString _ = "()"
+
+  end
+
+module Int32 =
+  struct
+
+    type t = int32
+    let toString = Int32.to_string
+
+  end
+
+module Int64 =
+  struct
+
+    type t = int64
+    let toString = Int64.to_string
+
+  end
+
+module Nativeint =
+  struct
+
+    type t = nativeint
+    let toString = Nativeint.to_string
+
+  end
+
+
+
+
