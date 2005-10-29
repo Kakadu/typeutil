@@ -29,7 +29,7 @@ let footer = "</body>\n</html>\n"
 let toHTML title body = sprintf "%s%s%s" (header title) body footer
 
 let anchor ref text = sprintf "<a name=%s>%s</a>" ref text
-let ref    ref text = sprintf "<a href=#%s>%s</a>" ref text
+let ref    ref text = sprintf "<a href=%s>%s</a>" ref text
 let bold   text     = sprintf "<b>%s</b>" text
 let italic text     = sprintf "<i>%s</i>" text
 let br              = "\n"

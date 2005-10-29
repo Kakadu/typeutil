@@ -76,8 +76,8 @@ val toHTML : string -> string -> string
     corresponding [<a name=...>...</a>] tags *)
 val anchor : string -> string -> string
 
-(** Generate reference to the anchor. [ref ref text] generates [text] surrounded by
-    corresponding [<a href=...>...</a>] tags. Symbol [#] inserted atomatically *)
+(** Generate hyperlink reference. [ref ref text] generates [text] surrounded by
+    corresponding [<a href=...>...</a>] tags *)
 val ref : string -> string -> string
 
 (** Generate [text] in bold *)
