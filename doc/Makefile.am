@@ -3,10 +3,12 @@ PARSER_INCLUDES += -I $(OCAMLLIB)/camlp4
 AM_P4FLAGS := -pp "$(CAMLP4O) $(PARSER_INCLUDES) pa_log.cmo $(LOG)"
 #AM_P4FLAGS = -pp "$(CAMLP4R) $(PARSER_INCLUDES)"
 
+.PHONY: doc
 # check if style.css already exists to avoid everytime generation
-all-am: html/style.css
+doc: html/style.css
 
 html/style.css: html
+	test -d html || mkdir html
 	$(OCAMLDOC) $(MODULE_INCLUDES) $(P4FLAGS) -d html -html \
 	-I $(top_srcdir)/src $(top_srcdir)/src/*.mli $(top_srcdir)/src/*.ml
 
