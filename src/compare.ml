@@ -81,3 +81,19 @@ module Array (X : Comparable) =
         in inner 0 0 
 
   end
+
+module C (X : sig type t end) = struct type t = X.t let compare = compare end
+
+module Char = C (struct type t = char end)
+module String = C (struct type t = string end)
+module Integer = C (struct type t = int end)
+module Float = C (struct type t = float end)
+module Bool = C (struct type t = bool end)
+module Exn = C (struct type t = exn end)
+module Unit = C (struct type t = unit end)
+module Int32 = C (struct type t = int32 end)
+module Int64 = C (struct type t = int64 end)
+module Nativeint = C (struct type t = nativeint end)
+
+
+

@@ -47,3 +47,15 @@ module Pair  (X   : Comparable) (Y    : Comparable) : Comparable with type t = X
 
 (** Comparator for maps *)
 module Map   (Key : Comparable) (Value : Comparable) : Comparable with type t = Value.t Map.Make(Key).t
+
+(** Wrapper to make builtin types compatable *)
+module String : Comparable with type t = string
+module Integer : Comparable with type t = int
+module Float : Comparable with type t = float
+module Bool : Comparable with type t = bool
+module Char : Comparable with type t = char
+module Unit : Comparable with type t = unit
+module Exn : Comparable with type t = exn
+module Int32 : Comparable with type t = int32
+module Int64 : Comparable with type t = int64
+module Nativeint : Comparable with type t = nativeint
