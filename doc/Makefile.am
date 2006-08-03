@@ -7,13 +7,10 @@ AM_P4FLAGS := -pp "$(CAMLP4O) $(PARSER_INCLUDES) pa_log.cmo $(LOG)"
 # check if style.css already exists to avoid everytime generation
 doc: html/style.css
 
-html/style.css: html
+html/style.css:
 	test -d html || mkdir html
 	$(OCAMLDOC) $(MODULE_INCLUDES) $(P4FLAGS) -d html -html \
 	-I $(top_srcdir)/src $(top_srcdir)/src/*.mli $(top_srcdir)/src/*.ml
-
-html:
-	test -d html || mkdir html
 
 # default clean
 clean-am:
