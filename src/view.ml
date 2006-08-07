@@ -106,7 +106,9 @@ module NamedPair (N : sig val first : string val second : string end) (F : Viewa
 
     type t = F.t * S.t
 
-    let toString (x, y) = sprintf "(%s=%s, %s=%s)" N.first (F.toString x) N.second (S.toString y)
+    let toString (x, y) = 
+      let field value = function "" -> value | name -> sprintf "%s=%s" name value in      
+      sprintf "(%s, %s)" (field (F.toString x) N.first) (field (S.toString y) N.second)
 
   end
 
