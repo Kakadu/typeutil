@@ -57,7 +57,7 @@ module NamedPair (N : sig val first : string val second : string end) (F : Eleme
 (** Functor to provide unnamed pair to HTML generation. *)
 module Pair (F : Element) (S : Element) : Element with type t = F.t * S.t
 
-(** Module to provide string to HTML generation. *)
+(** Module to provide string to HTML generation. Performs quotation of html-sensitive characters (<, >, & and """") *)
 module String : Element with type t = string
 
 (** {2 Miscellaneous helpers} *)

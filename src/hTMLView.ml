@@ -145,7 +145,19 @@ module String =
   struct
     
     type t = string
-	  
-    let toHTML s = s
+
+    let toHTML s = 
+      let buf = Buffer.create (String.length s * 2) in
+      for i=0 to String.length s - 1 do
+	Buffer.add_string buf
+	  (match s.[i] with
+	  | '<' -> "&lt;"
+	  | '>' -> "&gt;"
+	  | '&' -> "&amp;"
+	  | '"' -> "&quot;"
+	  | c   -> String.make 1 c
+	  )
+      done;
+      Buffer.contents buf
 
   end
