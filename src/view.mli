@@ -1,5 +1,5 @@
 (**************************************************************************
- *  Copyright (C) 2005
+ *  Copyright (C) 2005-2008
  *  Dmitri Boulytchev (db@tepkom.ru), St.Petersburg State University
  *  Universitetskii pr., 28, St.Petersburg, 198504, RUSSIA    
  *
@@ -22,13 +22,14 @@
  **************************************************************************)
 
 (** Functorial constructors to provide string conversion functions for the
-    standard collection types *)
+    standard collection types 
+*)
 
 (** Signature to supply viewing function *)
 module type Viewable = 
   sig
 
-    (** Principal type *)
+    (** The type *)
     type t
 
     (** View function *)
@@ -40,7 +41,7 @@ module type Viewable =
 module type Concat =
   sig
  
-    (** Concatenate *)
+    (** Concatenate function *)
     val concat : string -> string -> string
 
   end
@@ -51,14 +52,23 @@ module ListC (C : Concat) (X : Viewable) : Viewable with type t = X.t list
 (** Viewing arrays of {!Viewable} types with explicit concatenation function *)
 module ArrayC (C : Concat) (X : Viewable) : Viewable with type t = X.t array
 
-(** Viewing sets of {!Viewable} types with explicit concatenation function *)
-module SetC (C : Concat) (S : Set.S) (V : Viewable with type t = S.elt) : Viewable with type t = S.t
+(** Viewing sets of {!Viewable} types with explicit concatenation function. 
+    Set items are ordered in according to their <b>string representations</b>
+ *)
+module SetC (C : Concat) (S : Set.S) (V : Viewable with type t = S.elt) : Viewable with 
+  type t = S.t
 
-(** Viewing maps of {!Viewable} types with explicit concatenation function *)
-module MapC (C : Concat) (M : Map.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with type t = V.t M.t
+(** Viewing maps of {!Viewable} types with explicit concatenation function. 
+    Set items are ordered in according to their <b>string representations</b>
+*)
+module MapC (C : Concat) (M : Map.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with 
+  type t = V.t M.t
 
-(** Viewing hashtables of {!Viewable} types with explicit concatenation function *)
-module HashtblC (C : Concat) (M : Hashtbl.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with type t = V.t M.t
+(** Viewing hashtables of {!Viewable} types with explicit concatenation function. 
+    Set items are ordered in according to their <b>string representations</b> 
+*)
+module HashtblC (C : Concat) (M : Hashtbl.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with 
+  type t = V.t M.t
 
 (** Viewing lists of {!Viewable} types with concatenation with comma *)
 module List (X : Viewable) : Viewable with type t = X.t list
@@ -66,18 +76,26 @@ module List (X : Viewable) : Viewable with type t = X.t list
 (** Viewing arrays of {!Viewable} types with concatenation with comma *)
 module Array (X : Viewable) : Viewable with type t = X.t array
 
-(** Viewing sets of {!Viewable} types with concatenation with comma *)
+(** Viewing sets of {!Viewable} types with concatenation with comma. 
+    Set items are ordered in according to their <b>string representations</b> 
+*)
 module Set (S : Set.S) (V : Viewable with type t = S.elt) : Viewable with type t = S.t
 
-(** Viewing maps of {!Viewable} types with concatenation with comma *)
-module Map (M : Map.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with type t = V.t M.t
+(** Viewing maps of {!Viewable} types with concatenation with comma. 
+    Set items are ordered in according to their <b>string representations</b> 
+*)
+module Map (M : Map.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with 
+  type t = V.t M.t
 
-(** Viewing hashtables of {!Viewable} types with concatenation with comma *)
-module Hashtbl (M : Hashtbl.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with type t = V.t M.t
+(** Viewing hashtables of {!Viewable} types with concatenation with comma. 
+    Set items are ordered in according to their <b>string representations</b> 
+*)
+module Hashtbl (M : Hashtbl.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with 
+  type t = V.t M.t
 
 (** Viewing named pairs. The first parameter supplies components names *)
-module NamedPair (N : sig val first : string val second : string end) (F : Viewable) (S : Viewable) : 
-   Viewable with type t = F.t * S.t
+module NamedPair (N : sig val first : string val second : string end) (F : Viewable) (S : Viewable) : Viewable with 
+  type t = F.t * S.t
 
 (** Viewing unnamed pairs *)
 module Pair (F : Viewable) (S : Viewable) : Viewable with type t = F.t * S.t
@@ -97,7 +115,8 @@ module Nativeint : Viewable with type t = nativeint
 (** {2 Viewing helpers} *)
 
 (** Concatenation function: [concatWithDelimiter x y delim] 
-    returns [x ^ delim ^ y] if x is not empty and [y] otherwise *)
+    returns [x ^ delim ^ y] if x is not empty and [y] otherwise 
+*)
 val concatWithDelimiter : string -> string -> string -> string
 
 (** Concatenation with comma *)

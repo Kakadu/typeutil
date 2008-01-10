@@ -1,5 +1,5 @@
 (**************************************************************************
- *  Copyright (C) 2005
+ *  Copyright (C) 2005-2008
  *  Dmitri Boulytchev (db@tepkom.ru), St.Petersburg State University
  *  Universitetskii pr., 28, St.Petersburg, 198504, RUSSIA    
  *
@@ -22,13 +22,14 @@
  **************************************************************************)
 
 (** Functorial constructors to provide compare functions for the
-    standard collection types *)
+    standard collection types 
+*)
 
 (** Comparable signature *)
 module type Comparable = 
   sig 
 
-    (** Principal type *)
+    (** The type *)
     type t 
 
     (** Compare function *)
@@ -37,16 +38,16 @@ module type Comparable =
   end
 
 (** Comparator for lists *)
-module List  (X   : Comparable) : Comparable with type t = X.t list
+module List (X : Comparable) : Comparable with type t = X.t list
 
 (** Comparator for arrays *)
-module Array (X   : Comparable) : Comparable with type t = X.t array
+module Array (X : Comparable) : Comparable with type t = X.t array
 
 (** Comparator for pairs *)
-module Pair  (X   : Comparable) (Y    : Comparable) : Comparable with type t = X.t * Y.t
+module Pair (X : Comparable) (Y : Comparable) : Comparable with type t = X.t * Y.t
 
 (** Comparator for maps *)
-module Map   (Key : Comparable) (Value : Comparable) : Comparable with type t = Value.t Map.Make(Key).t
+module Map (Key : Comparable) (Value : Comparable) : Comparable with type t = Value.t Map.Make(Key).t
 
 (** Wrapper to make builtin types compatable *)
 module String : Comparable with type t = string

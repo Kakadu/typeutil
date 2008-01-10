@@ -1,5 +1,5 @@
 (**************************************************************************
- *  Copyright (C) 2005
+ *  Copyright (C) 2005-2008
  *  Dmitri Boulytchev (db@tepkom.ru), St.Petersburg State University
  *  Universitetskii pr., 28, St.Petersburg, 198504, RUSSIA    
  *
@@ -22,13 +22,14 @@
  **************************************************************************)
 
 (** Functorial constructors to provide HTML generation functions for the
-    standard collection types *)
+    standard collection types 
+*)
 
 (** An abstract element to generate HTML from *)
 module type Element =
   sig 
 
-    (** Principal type *)
+    (** The type *)
     type t 
 
     (** Generate HTML representation *)    
@@ -42,17 +43,24 @@ module List (T : Element) : Element with type t = T.t list
 (** Functor to provide array to HTML generation *)
 module Array (T : Element) : Element with type t = T.t array
 
-(** Functor to provide set to HTML generation *)
+(** Functor to provide set to HTML generation. 
+    Set items are ordered in according to their <b>string representations</b> 
+*)
 module Set (S : Set.S) (V : Element with type t = S.elt) : Element with type t = S.t
 
-(** Functor to provide map to HTML generation *)
+(** Functor to provide map to HTML generation. 
+    Set items are ordered in according to their <b>string representations</b> 
+*)
 module Map (M : Map.S) (K : Element with type t = M.key) (V : Element) : Element with type t = V.t M.t
 
-(** Functor to provide hashtable to HTML generation *)
+(** Functor to provide hashtable to HTML generation. 
+    Set items are ordered in according to their <b>string representations</b> 
+*)
 module Hashtbl (M : Hashtbl.S) (K : Element with type t = M.key) (V : Element) : Element with type t = V.t M.t
 
 (** Functor to provide named pair to HTML generation. The first parameter sets components names *)
-module NamedPair (N : sig val first : string val second : string end) (F : Element) (S : Element) : Element with type t = F.t * S.t
+module NamedPair (N : sig val first : string val second : string end) (F : Element) (S : Element) : Element with 
+  type t = F.t * S.t
 
 (** Functor to provide unnamed pair to HTML generation. *)
 module Pair (F : Element) (S : Element) : Element with type t = F.t * S.t
@@ -63,7 +71,8 @@ module String : Element with type t = string
 (** {2 Miscellaneous helpers} *)
 
 (** Generate HTML header. [header title] generates header of HTML file
-    with title [title] *)
+    with title [title] 
+*)
 val header : string -> string
 
 (** HTML footer *)
@@ -73,11 +82,13 @@ val footer : string
 val toHTML : string -> string -> string 
 
 (** Generate anchor in the HTML text. [anchor ref text] generates [text] suppounded by
-    corresponding [<a name=...>...</a>] tags *)
+    corresponding [<a name=...>...</a>] tags 
+*)
 val anchor : string -> string -> string
 
 (** Generate hyperlink reference. [ref ref text] generates [text] surrounded by
-    corresponding [<a href=...>...</a>] tags *)
+    corresponding [<a href=...>...</a>] tags 
+*)
 val ref : string -> string -> string
 
 (** Generate [text] in bold *)
@@ -90,7 +101,8 @@ val italic : string -> string
 val br : string
 
 (** Generate named value. [named name value] generates the string 
-    ["<b>name:</b> value"] *)
+    ["<b>name:</b> value"] 
+*)
 val named : string -> string -> string
 
 (** Generate list of named values separated by [br] *)

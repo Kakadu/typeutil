@@ -30,7 +30,7 @@ fi
 # Add current dir to search path
 OLDPATH=${PATH}
 PATH=.:${PATH}
-
+ 
 for i in ${RUN}; do
     log=`basename ${i} ${EXEEXT}`
     ${i} ${ARGS} > ${log}.log

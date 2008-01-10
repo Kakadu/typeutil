@@ -1,5 +1,5 @@
 (**************************************************************************
- *  Copyright (C) 2005
+ *  Copyright (C) 2005-2008
  *  Dmitri Boulytchev (db@tepkom.ru), St.Petersburg State University
  *  Universitetskii pr., 28, St.Petersburg, 198504, RUSSIA    
  *
@@ -43,6 +43,8 @@ module type Concat =
 
   end
 
+module L = List
+
 open List
 
 module ListC (C : Concat) (X : Viewable) =
@@ -71,35 +73,13 @@ module SetC (C : Concat) (S : Set.S) (V : Viewable with type t = S.elt) =
   struct
 
     type t = S.t
-    let toString x = S.fold (fun x acc -> C.concat acc (V.toString x)) x ""
+    let toString x = 
+      let module X = ListC (C) (V) in
+      X.toString (S.elements x)
 
   end
 
 module Set = SetC (struct let concat = concatWithComma end)
-
-module MapC (C : Concat) (M : Map.S) (K : Viewable with type t = M.key) (V : Viewable) =
-  struct
-
-    type t = V.t M.t
-    let toString x = M.fold (fun key value acc -> 
-          C.concat acc (sprintf "%s -> %s" (K.toString key) (V.toString value))
-       ) x ""
-
-  end
-
-module Map = MapC (struct let concat = concatWithComma end)
-
-module HashtblC (C : Concat) (M : Hashtbl.S) (K : Viewable with type t = M.key) (V : Viewable) =
-  struct
-
-    type t = V.t M.t
-    let toString x = M.fold (fun key value acc -> 
-          C.concat acc (sprintf "%s -> %s" (K.toString key) (V.toString value))
-       ) x ""
-
-  end
-
-module Hashtbl = HashtblC (struct let concat = concatWithComma end)
 
 module NamedPair (N : sig val first : string val second : string end) (F : Viewable) (S : Viewable) =
   struct
@@ -129,6 +109,32 @@ module String =
     let toString x = x
 
   end
+
+module MapC (C : Concat) (M : Map.S) (K : Viewable with type t = M.key) (V : Viewable) =
+  struct
+
+    type t = V.t M.t
+    let toString x = 
+      let module P = Pair (K) (V) in
+      let module X = ListC (C) (String) in
+      X.toString (L.sort compare (M.fold (fun x y acc -> (P.toString (x, y)) :: acc) x []))
+
+  end
+
+module Map = MapC (struct let concat = concatWithComma end)
+
+module HashtblC (C : Concat) (M : Hashtbl.S) (K : Viewable with type t = M.key) (V : Viewable) =
+  struct
+
+    type t = V.t M.t
+    let toString x = 
+      let module P = Pair (K) (V) in
+      let module X = ListC (C) (String) in
+      X.toString (L.sort compare (M.fold (fun x y acc -> (P.toString (x, y)) :: acc) x []))
+
+  end
+
+module Hashtbl = HashtblC (struct let concat = concatWithComma end)
 
 module Integer =
   struct

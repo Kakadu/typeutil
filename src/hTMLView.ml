@@ -1,5 +1,5 @@
 (**************************************************************************
- *  Copyright (C) 2005
+ *  Copyright (C) 2005-2008
  *  Dmitri Boulytchev (db@tepkom.ru), St.Petersburg State University
  *  Universitetskii pr., 28, St.Petersburg, 198504, RUSSIA    
  *
@@ -61,6 +61,8 @@ let make () =
 
 let (<@>) f g = fun x -> f (g x)
 
+module L = List
+
 open List
 
 module List (T : Element) =
@@ -106,10 +108,12 @@ module Set (S : Set.S) (V : Element with type t = S.elt) =
   struct
 
     type t = S.t
+
     let toHTML x =     
-        let g = make () in
-        S.iter (g.append <@> V.toHTML) x;
-        g.contents ()
+      let g = make () in
+      let e = L.sort compare (L.map V.toHTML (S.elements x)) in	
+      L.iter g.append e;
+      g.contents ()
 
   end
 
@@ -118,12 +122,11 @@ module Map (M : Map.S) (K : Element with type t = M.key) (V : Element) =
 
     type t = V.t M.t
     let toHTML x =     
-        let g = make () in
-        M.iter (fun key value -> 
-           let module P = NamedPair(struct let first = bold "key" let second = bold "value" end)(K)(V) in 
-           g.append (P.toHTML (key, value))
-        ) x;
-        g.contents ()
+      let module P = NamedPair(struct let first = bold "key" let second = bold "value" end)(K)(V) in 
+      let g = make () in
+      let e = L.sort compare (M.fold (fun x y acc -> (P.toHTML (x, y)) :: acc) x []) in
+      L.iter g.append e;
+      g.contents ()
 
   end
 
@@ -132,12 +135,11 @@ module Hashtbl (M : Hashtbl.S) (K : Element with type t = M.key) (V : Element) =
 
     type t = V.t M.t
     let toHTML x =     
-        let g = make () in
-        M.iter (fun key value -> 
-           let module P = NamedPair(struct let first = bold "key" let second = bold "value" end)(K)(V) in 
-           g.append (P.toHTML (key, value))
-        ) x;
-        g.contents ()
+      let module P = NamedPair(struct let first = bold "key" let second = bold "value" end)(K)(V) in 
+      let g = make () in
+      let e = L.sort compare (M.fold (fun x y acc -> (P.toHTML (x, y)) :: acc) x []) in
+      L.iter g.append e;
+      g.contents ()
 
   end
 
