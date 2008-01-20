@@ -53,6 +53,7 @@ AC_CHECK_CAMLP5_MODULE(pa_extend, pa_extend.cmo, +camlp5)
 AC_CHECK_CAMLP5_MODULE(pa_pprintf, pa_pprintf.cmo, +camlp5)
 AC_CHECK_CAMLP5_MODULE(q_MLast, q_MLast.cmo, +camlp5)
 AC_CHECK_CAMLP5_MODULE(Pr_o, pr_o.cmo, +camlp5)
+AC_CHECK_CAMLP5_MODULE(logger, pa_log.cmo, +camlp5 ../logger/camlp5, http://oops.tepkom.ru/projects/logger) dnl GET: svn co svn://oops.tepkom.ru/svn/logger/trunk
 AC_SUBST(PARSER_INCLUDES)
 fi
 
