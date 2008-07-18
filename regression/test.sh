@@ -9,7 +9,7 @@ TEST=`basename $1`
 ERROR=0
 
 # List of program to run
-RUN="${TEST}${EXEEXT}"
+RUN="./${TEST}${EXEEXT}"
 # Program arguments. Could be empty.
 ARGS=""
 # Logs or other outputs to check

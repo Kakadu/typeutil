@@ -23,6 +23,54 @@
 
 open Printf
 
+type er = Buffer.t -> unit
+
+type viewer = er
+
+let toString v =
+  let b = Buffer.create 1024 in
+  v b;
+  Buffer.contents b
+
+let string x b = Buffer.add_string b x
+let int    x   = string (string_of_int x)
+let float  x   = string (string_of_float x)
+let bool   x   = string (string_of_bool x)
+let char   x   = string (Printf.sprintf "%c" x)
+
+let semicolon = string "; "
+let comma     = string ", "
+let space     = string " "
+let break     = string "\n"
+
+let seq  v b = List .iter (fun x -> x b) v
+let seqa v b = Array.iter (fun x -> x b) v
+
+let listBy d v b = 
+  ignore 
+    (List.fold_left 
+       (fun l x ->
+	 x b;
+	 match l with [] -> [] | hd :: tl -> d b; tl
+       )
+       (match v with [] -> [] | _::tl -> tl)
+       v
+    )
+
+let list = listBy comma
+
+let arrayBy d v b =   
+  let n = Array.length v in
+  Array.iteri (fun i x -> x b; if i < n - 1 then d b) v
+
+let array = arrayBy comma
+
+let inbr   l r b = seq [l; b; r]
+
+let inrbr  b = inbr (string "(") (string ")") b
+let insqbr b = inbr (string "[") (string "]") b
+let incvbr b = inbr (string "{") (string "}") b
+
 let concatWithDelimiter delimiter acc x = match acc with "" -> x | _ -> acc ^ delimiter ^ x
 let concatWithComma = concatWithDelimiter ", "
 let concatWithSemicolon = concatWithDelimiter "; "
@@ -199,7 +247,3 @@ module Nativeint =
     let toString = Nativeint.to_string
 
   end
-
-
-
-

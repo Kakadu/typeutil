@@ -21,11 +21,63 @@
  *  (enclosed in the file COPYING).
  **************************************************************************)
 
-(** Functorial constructors to provide string conversion functions for the
-    standard collection types 
-*)
+(** {1 Viewing values of various types } *)
 
-(** Signature to supply viewing function *)
+(** {1 Combinatorial interface} *)
+
+(** Type of the printer (to be referenced as [View.er]) *)
+type er = Buffer.t -> unit
+
+(** Synonym for unqualified reference *)
+type viewer = er
+
+(** String conversion *)
+val toString : viewer -> string
+
+(** Viewers for built-in types *)
+val string : string -> viewer
+val int    : int -> viewer
+val float  : float -> viewer
+val bool   : bool -> viewer
+val char   : char -> viewer
+
+(** Some string viewers *)
+val semicolon : viewer
+val comma     : viewer
+val space     : viewer
+val break     : viewer
+
+(** Sequence combinators *)
+val seq  : viewer list -> viewer
+val seqa : viewer array -> viewer
+
+(** List by delimiter *)
+val listBy : viewer -> viewer list -> viewer
+
+(** List by comma *)
+val list : viewer list -> viewer
+
+(** Array by delimiter *)
+val arrayBy : viewer -> viewer array -> viewer
+
+(** Array by comma *)
+val array : viewer array -> viewer
+
+(** [inbr l r b] prints [b] in brackets [l], [r] *)
+val inbr : viewer -> viewer -> viewer -> viewer
+
+(** [inrbr b] prints [b] in round brackets *)
+val inrbr : viewer -> viewer
+
+(** [insqbr b] prints [b] in square brackets *)
+val insqbr : viewer -> viewer
+
+(** [incvbr b] prints [b] in curved brackets *)
+val incvbr : viewer -> viewer
+
+(** {1 Functorial interface } *)
+
+(** Signature to provide viewing function *)
 module type Viewable = 
   sig
 
