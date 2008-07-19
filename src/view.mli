@@ -21,9 +21,9 @@
  *  (enclosed in the file COPYING).
  **************************************************************************)
 
-(** {1 Viewing values of various types } *)
+(** {1 Viewing values of various types} *)
 
-(** {1 Combinatorial interface} *)
+(** {2 Combinatorial interface} *)
 
 (** Type of the printer (to be referenced as [View.er]) *)
 type er = Buffer.t -> unit
@@ -34,20 +34,20 @@ type viewer = er
 (** String conversion *)
 val toString : viewer -> string
 
-(** Viewers for built-in types *)
+(** {3 Viewers for built-in types} *)
 val string : string -> viewer
 val int    : int -> viewer
 val float  : float -> viewer
 val bool   : bool -> viewer
 val char   : char -> viewer
 
-(** Some string viewers *)
+(** {3 Some predefined string viewers} *)
 val semicolon : viewer
 val comma     : viewer
 val space     : viewer
 val break     : viewer
 
-(** Sequence combinators *)
+(** {3 Sequence combinators} *)
 val seq  : viewer list -> viewer
 val seqa : viewer array -> viewer
 
@@ -66,6 +66,8 @@ val array : viewer array -> viewer
 (** [inbr l r b] prints [b] in brackets [l], [r] *)
 val inbr : viewer -> viewer -> viewer -> viewer
 
+(** {3 Bracketing combinators} *)
+
 (** [inrbr b] prints [b] in round brackets *)
 val inrbr : viewer -> viewer
 
@@ -75,7 +77,7 @@ val insqbr : viewer -> viewer
 (** [incvbr b] prints [b] in curved brackets *)
 val incvbr : viewer -> viewer
 
-(** {1 Functorial interface } *)
+(** {2 Functorial interface } *)
 
 (** Signature to provide viewing function *)
 module type Viewable = 
@@ -152,7 +154,8 @@ module NamedPair (N : sig val first : string val second : string end) (F : Viewa
 (** Viewing unnamed pairs *)
 module Pair (F : Viewable) (S : Viewable) : Viewable with type t = F.t * S.t
 
-(** Wrapper to make builtin types viewable *)
+(** {3 Wrappers to make builtin types viewable} *)
+
 module String : Viewable with type t = string
 module Integer : Viewable with type t = int
 module Float : Viewable with type t = float
@@ -164,7 +167,7 @@ module Int32 : Viewable with type t = int32
 module Int64 : Viewable with type t = int64
 module Nativeint : Viewable with type t = nativeint
 
-(** {2 Viewing helpers} *)
+(** {3 Viewing helpers} *)
 
 (** Concatenation function: [concatWithDelimiter x y delim] 
     returns [x ^ delim ^ y] if x is not empty and [y] otherwise 

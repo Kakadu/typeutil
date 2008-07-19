@@ -13,6 +13,7 @@ html/style.css:
 	test -d html || mkdir html
 	$(OCAMLDOC) $(MODULE_INCLUDES) $(PXFLAGS) -d html -html \
 	-I $(top_srcdir)/src $(top_srcdir)/src/*.mli $(top_srcdir)/src/*.ml
+	if [ -f $(top_srcdir)/src/style.css ] ; then cp $(top_srcdir)/src/style.css html/ ; fi
 
 # default clean
 clean-am:

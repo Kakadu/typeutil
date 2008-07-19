@@ -21,7 +21,7 @@
  *  (enclosed in the file COPYING).
  **************************************************************************)
 
-(** {1 HTML generation functions for the types} *)
+(** {1 Viewing values of various types in HTML-format} *)
 
 (** {2 Combinator interface} *)
 
@@ -34,33 +34,20 @@ type viewer = er
 (** Escapes special HTML symbols ("<", ">", "&", """") *)
 val escape : string -> string
 
-(** Viewer constructors for build-in types *)
+(** {3 Viewer constructors for build-in types} *)
+
 val string : string -> viewer
 val int : int -> viewer
 val float : float -> viewer
 val bool : bool -> viewer
 val char : char -> viewer
 
-(** Sequence constructors *)
+(** {3 Sequence constructors} *)
+
 val seq : viewer list -> viewer
 val seqa : viewer array -> viewer
 
-(** Break viewer *)
-val br : viewer
-
-(** Tagged viewer: [tag name p] surrounds [p] with open and close tags 
-    with name [name]
-*)
-val tag : string -> viewer -> viewer
-
-(** Some tags *)
-val html : viewer -> viewer
-val title : viewer -> viewer
-val body : viewer -> viewer
-val ul : viewer -> viewer
-val li : viewer -> viewer
-val b : viewer -> viewer
-val i : viewer -> viewer
+(** {3 Some predefined HTML-specific viewers} *)
 
 (** [anchor ref p] outputs [p] within the anchor [ref] *)
 val anchor : string -> viewer -> viewer
@@ -79,6 +66,24 @@ val array : viewer array -> viewer
 
 (** Outputs a list of named elements *)
 val fields : (string * viewer) list -> viewer
+
+(** Break viewer *)
+val br : viewer
+
+(** Tagged viewer: [tag name p] surrounds [p] with open and close tags 
+    with name [name]
+*)
+val tag : string -> viewer -> viewer
+
+(** {3 Some tags} *)
+
+val html : viewer -> viewer
+val title : viewer -> viewer
+val body : viewer -> viewer
+val ul : viewer -> viewer
+val li : viewer -> viewer
+val b : viewer -> viewer
+val i : viewer -> viewer
 
 (** {2 Functorial interface} *)
 

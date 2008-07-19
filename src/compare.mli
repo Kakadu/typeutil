@@ -21,8 +21,9 @@
  *  (enclosed in the file COPYING).
  **************************************************************************)
 
-(** Functorial constructors to provide compare functions for the
-    standard collection types 
+(** {1 Functorial constructors to provide compare functions for the values
+       of various types
+    }
 *)
 
 (** Comparable signature *)
@@ -49,7 +50,8 @@ module Pair (X : Comparable) (Y : Comparable) : Comparable with type t = X.t * Y
 (** Comparator for maps *)
 module Map (Key : Comparable) (Value : Comparable) : Comparable with type t = Value.t Map.Make(Key).t
 
-(** Wrapper to make builtin types compatable *)
+(** {2 Wrappers to make builtin types compatable} *)
+
 module String : Comparable with type t = string
 module Integer : Comparable with type t = int
 module Float : Comparable with type t = float
