@@ -21,9 +21,66 @@
  *  (enclosed in the file COPYING).
  **************************************************************************)
 
-(** Functorial constructors to provide HTML generation functions for the
-    standard collection types 
+(** {1 HTML generation functions for the types} *)
+
+(** {2 Combinator interface} *)
+
+(** Type synonym for viewer function to be referenced as [HTMLView.er] *)
+type er = View.er
+
+(** Type synonym to be referenced unqualified*)
+type viewer = er
+
+(** Escapes special HTML symbols ("<", ">", "&", """") *)
+val escape : string -> string
+
+(** Viewer constructors for build-in types *)
+val string : string -> viewer
+val int : int -> viewer
+val float : float -> viewer
+val bool : bool -> viewer
+val char : char -> viewer
+
+(** Sequence constructors *)
+val seq : viewer list -> viewer
+val seqa : viewer array -> viewer
+
+(** Break viewer *)
+val br : viewer
+
+(** Tagged viewer: [tag name p] surrounds [p] with open and close tags 
+    with name [name]
 *)
+val tag : string -> viewer -> viewer
+
+(** Some tags *)
+val html : viewer -> viewer
+val title : viewer -> viewer
+val body : viewer -> viewer
+val ul : viewer -> viewer
+val li : viewer -> viewer
+val b : viewer -> viewer
+val i : viewer -> viewer
+
+(** [anchor ref p] outputs [p] within the anchor [ref] *)
+val anchor : string -> viewer -> viewer
+
+(** [ref ref p] outputs [p] as hyper-reference to [ref] *)
+val ref : string -> viewer -> viewer
+
+(** [named name p] outputs [p] as named by [name] item *)
+val named : string -> viewer -> viewer
+
+(** Outputs unordered list *)
+val list : viewer list -> viewer
+
+(** Outputs unordered list *)
+val array : viewer array -> viewer
+
+(** Outputs a list of named elements *)
+val fields : (string * viewer) list -> viewer
+
+(** {2 Functorial interface} *)
 
 (** An abstract element to generate HTML from *)
 module type Element =
@@ -67,43 +124,3 @@ module Pair (F : Element) (S : Element) : Element with type t = F.t * S.t
 
 (** Module to provide string to HTML generation. Performs quotation of html-sensitive characters (<, >, & and """") *)
 module String : Element with type t = string
-
-(** {2 Miscellaneous helpers} *)
-
-(** Generate HTML header. [header title] generates header of HTML file
-    with title [title] 
-*)
-val header : string -> string
-
-(** HTML footer *)
-val footer : string
-
-(** Generate HTML. [toHTML title body] generates HTML file with title [title] and body [body] *)
-val toHTML : string -> string -> string 
-
-(** Generate anchor in the HTML text. [anchor ref text] generates [text] suppounded by
-    corresponding [<a name=...>...</a>] tags 
-*)
-val anchor : string -> string -> string
-
-(** Generate hyperlink reference. [ref ref text] generates [text] surrounded by
-    corresponding [<a href=...>...</a>] tags 
-*)
-val ref : string -> string -> string
-
-(** Generate [text] in bold *)
-val bold : string -> string
-
-(** Generate [text] in italic *)
-val italic : string -> string
-
-(** HTML line break *)
-val br : string
-
-(** Generate named value. [named name value] generates the string 
-    ["<b>name:</b> value"] 
-*)
-val named : string -> string -> string
-
-(** Generate list of named values separated by [br] *)
-val fields : (string * string) list -> string 

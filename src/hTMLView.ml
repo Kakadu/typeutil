@@ -23,21 +23,58 @@
 
 open Printf
 
-let header title = sprintf "<html>\n<title>%s</title>\n<body>\n" title
-let footer = "</body>\n</html>\n"
+type er = View.er
+type viewer = er
 
-let toHTML title body = sprintf "%s%s%s" (header title) body footer
+let toHTML = View.toString
 
-let anchor ref text = sprintf "<a name=%S>%s</a>" ref text
-let ref    ref text = sprintf "<a href=%S>%s</a>" ref text
-let bold   text     = sprintf "<b>%s</b>" text
-let italic text     = sprintf "<i>%s</i>" text
-let br              = "\n"
+let escape s =
+  let buf = Buffer.create (String.length s * 2) in
+  for i=0 to String.length s - 1 do
+    Buffer.add_string buf
+      (match s.[i] with
+      | '<' -> "&lt;"
+      | '>' -> "&gt;"
+      | '&' -> "&amp;"
+      | '"' -> "&quot;"
+      | c   -> String.make 1 c
+      )
+  done;
+  Buffer.contents buf
 
-let named name value = (bold (name ^ ": ")) ^ value
-let fields list = 
-    sprintf "<ul>\n%s\n</ul>"
-       (List.fold_left (fun str (name, value) -> str ^ ("<li type=none>" ^ (named name value))) "" list)
+let string s = View.string (escape s)
+
+let int    = View.int
+let float  = View.float
+let bool   = View.bool
+let char   = View.char
+
+let seq    = View.seq
+let seqa   = View.seqa
+
+let br = string "<br>"
+
+let tag s p = seq [string (sprintf "<%s>" s); p; string (sprintf "</%s>" s)]
+
+let html    = tag "html"
+let title   = tag "title"
+let body    = tag "body"
+let ul      = tag "ul"
+let li      = tag "li"
+let b       = tag "b"
+let i       = tag "i"
+
+let anchor r p = seq [string (sprintf "<a name=\"%S\">" r); p; string "</a>"]
+let ref    r p = seq [string (sprintf "<a href=\"%S\">" r); p; string "</a>"]
+
+let named n p = seq [b (string (n ^ ": ")); p]
+
+let list  p = tag "ul" (seq  (List .map (tag "li") p))
+let array p = tag "ul" (seqa (Array.map (tag "li") p))
+
+let fields l = list (List.map (fun (n, x) -> named n x) l)
+  
+let make f x = string (f x)
 
 module type Element =
   sig
@@ -48,20 +85,16 @@ module type Element =
 
   end
 
-type generator = {append: string -> unit; contents: unit -> string}
-
-let make () =
-    let buffer = Buffer.create 1024 in
-    let append = Buffer.add_string buffer in
-    append "<ul>\n";
-    {
-      append   = (fun x -> append (sprintf "<li>%s" x));
-      contents = (fun () -> append "</ul>\n"; Buffer.contents buffer);
-    }
-
-let (<@>) f g = fun x -> f (g x)
-
 module L = List
+
+module String =
+  struct
+    
+    type t = string
+
+    let toHTML = escape
+
+  end
 
 open List
 
@@ -70,10 +103,7 @@ module List (T : Element) =
 
     type t = T.t list
 
-    let toHTML list =
-        let g = make () in
-        iter (g.append <@> T.toHTML) list;
-        g.contents ()
+    let toHTML l = toHTML (list (List.map (make T.toHTML) l))
 
   end
 
@@ -82,10 +112,7 @@ module Array (T : Element) =
 
     type t = T.t array
 
-    let toHTML array =
-        let g = make () in
-        Array.iter (g.append <@> T.toHTML) array;
-        g.contents ()
+    let toHTML a = toHTML (array (Array.map (make T.toHTML) a))
 
   end
 
@@ -95,10 +122,12 @@ module NamedPair (N : sig val first : string val second : string end) (F : Eleme
     type t = F.t * S.t
 
     let toHTML (f, s) = 
-        let g = make () in
-        g.append (sprintf "%s %s" N.first (F.toHTML f));
-        g.append (sprintf "%s %s" N.second (S.toHTML s));
-        g.contents ()
+      toHTML
+	(list 
+	   [named N.first  (make F.toHTML f);
+            named N.second (make S.toHTML s);
+	   ]
+	)
 
   end
 
@@ -110,10 +139,8 @@ module Set (S : Set.S) (V : Element with type t = S.elt) =
     type t = S.t
 
     let toHTML x =     
-      let g = make () in
-      let e = L.sort compare (L.map V.toHTML (S.elements x)) in	
-      L.iter g.append e;
-      g.contents ()
+      let module LL = List (String) in
+      LL.toHTML (L.sort compare (L.map V.toHTML (S.elements x)))
 
   end
 
@@ -121,12 +148,11 @@ module Map (M : Map.S) (K : Element with type t = M.key) (V : Element) =
   struct
 
     type t = V.t M.t
+
     let toHTML x =     
-      let module P = NamedPair(struct let first = bold "key" let second = bold "value" end)(K)(V) in 
-      let g = make () in
-      let e = L.sort compare (M.fold (fun x y acc -> (P.toHTML (x, y)) :: acc) x []) in
-      L.iter g.append e;
-      g.contents ()
+      let module P  = NamedPair (struct let first = "key" let second = "value" end)(K)(V) in 
+      let module LL = List (String) in
+      LL.toHTML (L.sort compare (M.fold (fun x y acc -> (P.toHTML (x, y)) :: acc) x []))
 
   end
 
@@ -134,32 +160,10 @@ module Hashtbl (M : Hashtbl.S) (K : Element with type t = M.key) (V : Element) =
   struct
 
     type t = V.t M.t
+
     let toHTML x =     
-      let module P = NamedPair(struct let first = bold "key" let second = bold "value" end)(K)(V) in 
-      let g = make () in
-      let e = L.sort compare (M.fold (fun x y acc -> (P.toHTML (x, y)) :: acc) x []) in
-      L.iter g.append e;
-      g.contents ()
-
-  end
-
-module String =
-  struct
-    
-    type t = string
-
-    let toHTML s = 
-      let buf = Buffer.create (String.length s * 2) in
-      for i=0 to String.length s - 1 do
-	Buffer.add_string buf
-	  (match s.[i] with
-	  | '<' -> "&lt;"
-	  | '>' -> "&gt;"
-	  | '&' -> "&amp;"
-	  | '"' -> "&quot;"
-	  | c   -> String.make 1 c
-	  )
-      done;
-      Buffer.contents buf
+      let module P  = NamedPair(struct let first = "key" let second = "value" end)(K)(V) in 
+      let module LL = List (String) in
+      LL.toHTML (L.sort compare (M.fold (fun x y acc -> (P.toHTML (x, y)) :: acc) x []))
 
   end
