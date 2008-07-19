@@ -31,12 +31,21 @@ type er = View.er
 (** Type synonym to be referenced unqualified*)
 type viewer = er
 
+(** String conversion *)
+val toHTML : viewer -> string
+
 (** Escapes special HTML symbols ("<", ">", "&", """") *)
 val escape : string -> string
 
+(** Escaped string *)
+val string : string -> viewer
+
+(** Raw string *)
+val raw : string -> viewer
+
+
 (** {3 Viewer constructors for build-in types} *)
 
-val string : string -> viewer
 val int : int -> viewer
 val float : float -> viewer
 val bool : bool -> viewer
@@ -124,8 +133,32 @@ module Hashtbl (M : Hashtbl.S) (K : Element with type t = M.key) (V : Element) :
 module NamedPair (N : sig val first : string val second : string end) (F : Element) (S : Element) : Element with 
   type t = F.t * S.t
 
-(** Functor to provide unnamed pair to HTML generation. *)
+(** Functor to provide unnamed pair to HTML generation *)
 module Pair (F : Element) (S : Element) : Element with type t = F.t * S.t
 
-(** Module to provide string to HTML generation. Performs quotation of html-sensitive characters (<, >, & and """") *)
-module String : Element with type t = string
+(** Module to provide raw string HTML generation *)
+module Raw : Element with type t = string
+
+(** Module to provide string to HTML generation *)
+module String :
+  sig
+
+    (** Type synonym *)
+    type t = string
+
+    (** HTML viewer *)
+    val toHTML : string -> string
+
+    (** Synonym for [named] for string values *)
+    val named  : string -> string -> string
+
+    (** Synonym for [fields] for string values *)
+    val fields : (string * string) list -> string
+
+    (** Synonym for [anchor] for string values *)
+    val anchor : string -> string -> string
+
+    (** Synonym for [ref] for string values *)
+    val ref : string -> string -> string
+
+  end

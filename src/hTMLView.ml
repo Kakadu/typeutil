@@ -43,6 +43,7 @@ let escape s =
   Buffer.contents buf
 
 let string s = View.string (escape s)
+let raw    s = View.string s
 
 let int    = View.int
 let float  = View.float
@@ -52,9 +53,9 @@ let char   = View.char
 let seq    = View.seq
 let seqa   = View.seqa
 
-let br = string "<br>"
+let br = raw "<br>"
 
-let tag s p = seq [string (sprintf "<%s>" s); p; string (sprintf "</%s>" s)]
+let tag s p = seq [raw (sprintf "<%s>" s); p; raw (sprintf "</%s>" s)]
 
 let html    = tag "html"
 let title   = tag "title"
@@ -64,8 +65,8 @@ let li      = tag "li"
 let b       = tag "b"
 let i       = tag "i"
 
-let anchor r p = seq [string (sprintf "<a name=\"%S\">" r); p; string "</a>"]
-let ref    r p = seq [string (sprintf "<a href=\"%S\">" r); p; string "</a>"]
+let anchor r p = seq [raw (sprintf "<a name=\"%S\">" r); p; raw "</a>"]
+let ref    r p = seq [raw (sprintf "<a href=\"%S\">" r); p; raw "</a>"]
 
 let named n p = seq [b (string (n ^ ": ")); p]
 
@@ -74,7 +75,7 @@ let array p = tag "ul" (seqa (Array.map (tag "li") p))
 
 let fields l = list (List.map (fun (n, x) -> named n x) l)
   
-let make f x = string (f x)
+let make f x = raw (f x)
 
 module type Element =
   sig
@@ -92,7 +93,21 @@ module String =
     
     type t = string
 
+    let named  n v = toHTML (named n (raw v))
+    let fields v   = toHTML (fields (List.map (fun (n, v) -> n, raw v) v))
+    let anchor n v = toHTML (anchor n (raw v))
+    let ref    n v = toHTML (ref    n (raw v))
+
     let toHTML = escape
+
+  end
+
+module Raw =
+  struct
+
+    type t = string
+
+    let toHTML s = toHTML (raw s)
 
   end
 
