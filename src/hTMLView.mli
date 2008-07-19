@@ -43,7 +43,6 @@ val string : string -> viewer
 (** Raw string *)
 val raw : string -> viewer
 
-
 (** {3 Viewer constructors for build-in types} *)
 
 val int : int -> viewer

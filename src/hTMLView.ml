@@ -65,8 +65,8 @@ let li      = tag "li"
 let b       = tag "b"
 let i       = tag "i"
 
-let anchor r p = seq [raw (sprintf "<a name=\"%S\">" r); p; raw "</a>"]
-let ref    r p = seq [raw (sprintf "<a href=\"%S\">" r); p; raw "</a>"]
+let anchor r p = seq [raw (sprintf "<a name=%S>" r); p; raw "</a>"]
+let ref    r p = seq [raw (sprintf "<a href=%S>" r); p; raw "</a>"]
 
 let named n p = seq [b (string (n ^ ": ")); p]
 
