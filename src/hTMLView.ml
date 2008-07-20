@@ -26,6 +26,35 @@ open Printf
 type er = View.er
 type viewer = er
 
+module Anchor (X : sig type t end) =
+  struct
+
+    module H = Hashtbl.Make 
+	(
+	 struct 
+
+	   type t = X.t 
+
+	   let hash  = Hashtbl.hash
+	   let equal = (==)
+
+	 end
+	)
+
+    let h = H.create 1024
+    let index =
+      let i = ref 0 in
+      (fun () -> 
+	incr i;
+	!i
+      )
+
+    let set x   = H.add h x (index ())
+    let isSet x = H.mem h x
+    let get x   = sprintf "anchor%d" (H.find h x)
+
+  end
+
 let toHTML = View.toString
 
 let escape s =

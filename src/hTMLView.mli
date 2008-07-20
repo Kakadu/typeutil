@@ -93,6 +93,22 @@ val li : viewer -> viewer
 val b : viewer -> viewer
 val i : viewer -> viewer
 
+(** {2 Helper module to provide anchors to values} *)
+
+module Anchor (X : sig type t end) :
+  sig
+
+    (** Set anchor for value *)
+    val set : X.t -> unit
+
+    (** Checks whether anchor is set *)
+    val isSet : X.t -> bool
+
+    (** Get anchor value. Raises [Not_found] if no anchor is set *)
+    val get : X.t -> string
+
+  end
+
 (** {2 Functorial interface} *)
 
 (** An abstract element to generate HTML from *)
