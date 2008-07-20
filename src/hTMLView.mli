@@ -95,17 +95,32 @@ val i : viewer -> viewer
 
 (** {2 Helper module to provide anchors to values} *)
 
-module Anchor (X : sig type t end) :
+(** Functor anchor takes one argument which describes type 
+    for which values anchors are set and name to distinguish
+    namespaces (if any)
+ *)
+module Anchor (X : sig type t val name : string end) :
   sig
 
     (** Set anchor for value *)
     val set : X.t -> unit
 
-    (** Checks whether anchor is set *)
-    val isSet : X.t -> bool
-
-    (** Get anchor value. Raises [Not_found] if no anchor is set *)
+    (** Get anchor value *)
     val get : X.t -> string
+
+    (** Get url for the value *)
+    val url : X.t -> string
+
+    (** Make reference to the value *)
+    val ref : X.t -> viewer -> viewer
+
+    (** Make reference for strings *)
+    module String :
+      sig
+
+	val ref : X.t -> string -> string
+
+      end
 
   end
 

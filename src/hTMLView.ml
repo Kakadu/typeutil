@@ -26,34 +26,7 @@ open Printf
 type er = View.er
 type viewer = er
 
-module Anchor (X : sig type t end) =
-  struct
-
-    module H = Hashtbl.Make 
-	(
-	 struct 
-
-	   type t = X.t 
-
-	   let hash  = Hashtbl.hash
-	   let equal = (==)
-
-	 end
-	)
-
-    let h = H.create 1024
-    let index =
-      let i = ref 0 in
-      (fun () -> 
-	incr i;
-	!i
-      )
-
-    let set x   = H.add h x (index ())
-    let isSet x = H.mem h x
-    let get x   = sprintf "anchor%d" (H.find h x)
-
-  end
+let ref' = ref
 
 let toHTML = View.toString
 
@@ -128,6 +101,48 @@ module String =
     let ref    n v = toHTML (ref    n (raw v))
 
     let toHTML = escape
+
+  end
+
+module Anchor (X : sig type t val name : string end) =
+  struct
+
+    module H = Hashtbl.Make 
+	(
+	 struct 
+
+	   type t = X.t 
+
+	   let hash  = Hashtbl.hash
+	   let equal = (==)
+
+	 end
+	)
+
+    let h = H.create 1024
+    let index =
+      let i = ref' 0 in
+      (fun () -> 
+	incr i;
+	!i
+      )
+
+    let set x   = H.add h x (index ())
+    let isSet x = H.mem h x
+    let get x   = 
+      if not (isSet x) then set x;
+      sprintf "%s.anchor%d" X.name (H.find h x)
+      
+    let url t = "#" ^ get t
+
+    let ref t text = ref (url t) text
+
+    module String =
+      struct
+
+	let ref t text = String.ref (url t) text
+
+      end
 
   end
 
