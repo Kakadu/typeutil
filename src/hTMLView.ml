@@ -58,7 +58,7 @@ let seqa   = View.seqa
 let br = raw "<br>"
 
 let tag ?(attrs="") s p = 
-  seq [raw (sprintf "<%s>" ((if attrs = "" then "" else " ") ^ attrs ^ s)); p; raw (sprintf "</%s>" s)]
+  seq [raw (sprintf "<%s>" (s ^ (if attrs = "" then "" else " ") ^ attrs)); p; raw (sprintf "</%s>" s)]
 
 let html  ?(attrs="") = tag "html"  ~attrs:attrs
 let title ?(attrs="") = tag "title" ~attrs:attrs
