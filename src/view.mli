@@ -21,7 +21,7 @@
  *  (enclosed in the file COPYING).
  **************************************************************************)
 
-(** {1 Viewing values of various types} *)
+(** Viewing values of various types *)
 
 (** {2 Combinatorial interface} *)
 
@@ -118,7 +118,7 @@ module SetC (C : Concat) (S : Set.S) (V : Viewable with type t = S.elt) : Viewab
 module MapC (C : Concat) (M : Map.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with 
   type t = V.t M.t
 
-(** Viewing hashtables of {!Viewable} types with explicit concatenation function. 
+(** Viewing hash tables of {!Viewable} types with explicit concatenation function. 
     Set items are ordered in according to their <b>string representations</b> 
 *)
 module HashtblC (C : Concat) (M : Hashtbl.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with 
@@ -141,7 +141,7 @@ module Set (S : Set.S) (V : Viewable with type t = S.elt) : Viewable with type t
 module Map (M : Map.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with 
   type t = V.t M.t
 
-(** Viewing hashtables of {!Viewable} types with concatenation with comma. 
+(** Viewing has htables of {!Viewable} types with concatenation with comma. 
     Set items are ordered in according to their <b>string representations</b> 
 *)
 module Hashtbl (M : Hashtbl.S) (K : Viewable with type t = M.key) (V : Viewable) : Viewable with 

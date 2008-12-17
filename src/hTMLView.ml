@@ -57,15 +57,20 @@ let seqa   = View.seqa
 
 let br = raw "<br>"
 
-let tag s p = seq [raw (sprintf "<%s>" s); p; raw (sprintf "</%s>" s)]
+let tag ?(attrs="") s p = 
+  seq [raw (sprintf "<%s>" ((if attrs = "" then "" else " ") ^ attrs ^ s)); p; raw (sprintf "</%s>" s)]
 
-let html    = tag "html"
-let title   = tag "title"
-let body    = tag "body"
-let ul      = tag "ul"
-let li      = tag "li"
-let b       = tag "b"
-let i       = tag "i"
+let html  ?(attrs="") = tag "html"  ~attrs:attrs
+let title ?(attrs="") = tag "title" ~attrs:attrs
+let body  ?(attrs="") = tag "body"  ~attrs:attrs
+let ul    ?(attrs="") = tag "ul"    ~attrs:attrs
+let ol    ?(attrs="") = tag "ol"    ~attrs:attrs
+let li    ?(attrs="") = tag "li"    ~attrs:attrs
+let b     ?(attrs="") = tag "b"     ~attrs:attrs
+let i     ?(attrs="") = tag "i"     ~attrs:attrs
+let table ?(attrs="") = tag "table" ~attrs:attrs
+let tr    ?(attrs="") = tag "tr"    ~attrs:attrs
+let td    ?(attrs="") = tag "td"    ~attrs:attrs
 
 let anchor r p = seq [raw (sprintf "<a name=%S>" r); p; raw "</a>"]
 let ref    r p = seq [raw (sprintf "<a href=%S>" r); p; raw "</a>"]

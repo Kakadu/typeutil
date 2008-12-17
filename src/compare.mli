@@ -21,9 +21,8 @@
  *  (enclosed in the file COPYING).
  **************************************************************************)
 
-(** {1 Functorial constructors to provide compare functions for the values
-       of various types
-    }
+(** Functorial constructors to provide compare functions for the values
+    of various types    
 *)
 
 (** Comparable signature *)

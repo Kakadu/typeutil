@@ -21,7 +21,7 @@
  *  (enclosed in the file COPYING).
  **************************************************************************)
 
-(** {1 Viewing values of various types in HTML-format} *)
+(** Viewing values of various types in HTML-format *)
 
 (** {2 Combinator interface} *)
 
@@ -79,19 +79,20 @@ val fields : (string * viewer) list -> viewer
 val br : viewer
 
 (** Tagged viewer: [tag name p] surrounds [p] with open and close tags 
-    with name [name]
+    with name [name]. Optional argument [attrs] can be given to provide
+    attributes for the tag (for example, [tag "table" ~attrs:"align=center" p])
 *)
-val tag : string -> viewer -> viewer
+val tag : ?attrs:string -> string -> viewer -> viewer
 
-(** {3 Some tags} *)
+(** {3 Some conventional HTML tags. Optional argument [attrs] provides HTML tag attributes} *)
 
-val html : viewer -> viewer
-val title : viewer -> viewer
-val body : viewer -> viewer
-val ul : viewer -> viewer
-val li : viewer -> viewer
-val b : viewer -> viewer
-val i : viewer -> viewer
+val html : ?attrs:string -> viewer -> viewer
+val title : ?attrs:string -> viewer -> viewer
+val body : ?attrs:string -> viewer -> viewer
+val ul : ?attrs:string -> viewer -> viewer
+val li : ?attrs:string -> viewer -> viewer
+val b : ?attrs:string -> viewer -> viewer
+val i : ?attrs:string -> viewer -> viewer
 
 (** {2 Helper module to provide anchors to values} *)
 
@@ -154,7 +155,7 @@ module Set (S : Set.S) (V : Element with type t = S.elt) : Element with type t =
 *)
 module Map (M : Map.S) (K : Element with type t = M.key) (V : Element) : Element with type t = V.t M.t
 
-(** Functor to provide hashtable to HTML generation. 
+(** Functor to provide hash table to HTML generation. 
     Set items are ordered in according to their <b>string representations</b> 
 *)
 module Hashtbl (M : Hashtbl.S) (K : Element with type t = M.key) (V : Element) : Element with type t = V.t M.t
