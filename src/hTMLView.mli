@@ -90,9 +90,13 @@ val html : ?attrs:string -> viewer -> viewer
 val title : ?attrs:string -> viewer -> viewer
 val body : ?attrs:string -> viewer -> viewer
 val ul : ?attrs:string -> viewer -> viewer
+val ol : ?attrs:string -> viewer -> viewer
 val li : ?attrs:string -> viewer -> viewer
 val b : ?attrs:string -> viewer -> viewer
 val i : ?attrs:string -> viewer -> viewer
+val table : ?attrs:string -> viewer -> viewer
+val tr : ?attrs:string -> viewer -> viewer
+val td : ?attrs:string -> viewer -> viewer
 
 (** {2 Helper module to provide anchors to values} *)
 
