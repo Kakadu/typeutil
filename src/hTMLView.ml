@@ -105,7 +105,7 @@ module String =
     let anchor n v = toHTML (anchor n (raw v))
     let ref    n v = toHTML (ref    n (raw v))
 
-    let toHTML = escape
+    let toHTML s = s
 
   end
 
