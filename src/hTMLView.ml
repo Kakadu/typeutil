@@ -71,6 +71,7 @@ let i     ?(attrs="") = tag "i"     ~attrs:attrs
 let table ?(attrs="") = tag "table" ~attrs:attrs
 let tr    ?(attrs="") = tag "tr"    ~attrs:attrs
 let td    ?(attrs="") = tag "td"    ~attrs:attrs
+let th    ?(attrs="") = tag "th"    ~attrs:attrs
 let form  ?(attrs="") = tag "form"  ~attrs:attrs
 let input ?(attrs="") = tag "input" ~attrs:attrs
 
