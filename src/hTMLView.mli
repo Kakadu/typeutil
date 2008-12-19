@@ -96,7 +96,8 @@ val b : ?attrs:string -> viewer -> viewer
 val i : ?attrs:string -> viewer -> viewer
 val table : ?attrs:string -> viewer -> viewer
 val tr : ?attrs:string -> viewer -> viewer
-val td : ?attrs:string -> viewer -> viewer
+val form : ?attrs:string -> viewer -> viewer
+val input : ?attrs:string -> viewer -> viewer
 
 (** {2 Helper module to provide anchors to values} *)
 

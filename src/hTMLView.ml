@@ -71,6 +71,8 @@ let i     ?(attrs="") = tag "i"     ~attrs:attrs
 let table ?(attrs="") = tag "table" ~attrs:attrs
 let tr    ?(attrs="") = tag "tr"    ~attrs:attrs
 let td    ?(attrs="") = tag "td"    ~attrs:attrs
+let form  ?(attrs="") = tag "form"  ~attrs:attrs
+let input ?(attrs="") = tag "input" ~attrs:attrs
 
 let anchor r p = seq [raw (sprintf "<a name=%S>" r); p; raw "</a>"]
 let ref    r p = seq [raw (sprintf "<a href=%S>" r); p; raw "</a>"]
