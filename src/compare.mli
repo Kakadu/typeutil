@@ -22,34 +22,34 @@
  **************************************************************************)
 
 (** Functorial constructors to provide compare functions for the values
-    of various types    
-*)
+     of various types.    
+ *)
 
-(** Comparable signature *)
+(** Comparable signature. *)
 module type Comparable = 
   sig 
 
-    (** The type *)
+    (** The type. *)
     type t 
 
-    (** Compare function *)
+    (** Compare function. *)
     val compare : t -> t -> int 
 
   end
 
-(** Comparator for lists *)
+(** Comparator for lists. *)
 module List (X : Comparable) : Comparable with type t = X.t list
 
-(** Comparator for arrays *)
+(** Comparator for arrays. *)
 module Array (X : Comparable) : Comparable with type t = X.t array
 
-(** Comparator for pairs *)
+(** Comparator for pairs. *)
 module Pair (X : Comparable) (Y : Comparable) : Comparable with type t = X.t * Y.t
 
-(** Comparator for maps *)
+(** Comparator for maps. *)
 module Map (Key : Comparable) (Value : Comparable) : Comparable with type t = Value.t Map.Make(Key).t
 
-(** {2 Wrappers to make builtin types compatable} *)
+(** {2 Wrappers to make builtin types comparable} *)
 
 module String : Comparable with type t = string
 module Integer : Comparable with type t = int

@@ -21,71 +21,82 @@
  *  (enclosed in the file COPYING).
  **************************************************************************)
 
-(** Viewing values of various types in HTML-format *)
+(** Viewing values of various types in HTML format. *)
 
-(** {2 Combinator interface} *)
+(** {2 Combinatorial interface} *)
 
-(** Type synonym for viewer function to be referenced as [HTMLView.er] *)
+(** Type synonym for viewer function to be referenced as [HTMLView.er]. *)
 type er = View.er
 
-(** Type synonym to be referenced unqualified*)
+(** Type synonym to be referenced unqualified. *)
 type viewer = er
 
-(** String conversion *)
+(** String conversion. *)
 val toHTML : viewer -> string
 
-(** Escapes special HTML symbols ("<", ">", "&", """") *)
+(** Escapes special HTML symbols ("<", ">", "&", """"). *)
 val escape : string -> string
 
-(** Escaped string *)
+(** Escaped string. *)
 val string : string -> viewer
 
-(** Raw string *)
+(** Raw string. *)
 val raw : string -> viewer
 
 (** {3 Viewer constructors for build-in types} *)
 
+(** [int] viewer. *)
 val int : int -> viewer
+
+(** [float] viewer. *)
 val float : float -> viewer
+
+(** [bool] viewer. *)
 val bool : bool -> viewer
+
+(** [char] viewer. *)
 val char : char -> viewer
 
 (** {3 Sequence constructors} *)
 
+(** List viewer. *)
 val seq : viewer list -> viewer
+
+(** Array viewer. *)
 val seqa : viewer array -> viewer
 
 (** {3 Some predefined HTML-specific viewers} *)
 
-(** [anchor ref p] outputs [p] within the anchor [ref] *)
+(** [anchor ref p] outputs [p] within the anchor [ref]. *)
 val anchor : string -> viewer -> viewer
 
-(** [ref ref p] outputs [p] as hyper-reference to [ref] *)
+(** [ref ref p] outputs [p] as hyper-reference to [ref]. *)
 val ref : string -> viewer -> viewer
 
-(** [named name p] outputs [p] as named by [name] item *)
+(** [named name p] outputs [p] as named by [name] item. *)
 val named : string -> viewer -> viewer
 
-(** Outputs unordered list *)
+(** Outputs unordered list. *)
 val list : viewer list -> viewer
 
-(** Outputs unordered list *)
+(** Outputs unordered list. *)
 val array : viewer array -> viewer
 
-(** Outputs a list of named elements *)
+(** Outputs a list of named elements. *)
 val fields : (string * viewer) list -> viewer
 
-(** Break viewer *)
+(** Break viewer. *)
 val br : viewer
 
 (** Tagged viewer: [tag name p] surrounds [p] with open and close tags 
     with name [name]. Optional argument [attrs] can be given to provide
-    attributes for the tag (for example, [tag "table" ~attrs:"align=center" p])
-*)
+    attributes for the tag (for example, [tag "table" ~attrs:"align=center" p]).
+ *)
 val tag : ?attrs:string -> string -> viewer -> viewer
 
 (** {3 Some conventional HTML tags. Optional argument [attrs] provides HTML tag attributes} *)
 
+(** *)
 val html : ?attrs:string -> viewer -> viewer
 val title : ?attrs:string -> viewer -> viewer
 val body : ?attrs:string -> viewer -> viewer
@@ -105,24 +116,24 @@ val input : ?attrs:string -> viewer -> viewer
 
 (** Functor anchor takes one argument which describes type 
     for which values anchors are set and name to distinguish
-    namespaces (if any)
+    namespaces (if any).
  *)
 module Anchor (X : sig type t val name : string end) :
   sig
 
-    (** Set anchor for value *)
+    (** Set anchor for value. *)
     val set : X.t -> unit
 
-    (** Get anchor value *)
+    (** Get anchor value. *)
     val get : X.t -> string
 
-    (** Get url for the value *)
+    (** Get url for the value. *)
     val url : X.t -> string
 
-    (** Make reference to the value *)
+    (** Make reference to the value. *)
     val ref : X.t -> viewer -> viewer
 
-    (** Make reference for strings *)
+    (** Make reference for strings. *)
     module String :
       sig
 
@@ -134,69 +145,69 @@ module Anchor (X : sig type t val name : string end) :
 
 (** {2 Functorial interface} *)
 
-(** An abstract element to generate HTML from *)
+(** An abstract element to generate HTML from. *)
 module type Element =
   sig 
 
-    (** The type *)
+    (** The type. *)
     type t 
 
-    (** Generate HTML representation *)    
+    (** Generate HTML representation. *)    
     val toHTML : t -> string 
 
   end
 
-(** Functor to provide list to HTML generation *)
+(** Functor to provide list to HTML generation. *)
 module List (T : Element) : Element with type t = T.t list
 
-(** Functor to provide array to HTML generation *)
+(** Functor to provide array to HTML generation. *)
 module Array (T : Element) : Element with type t = T.t array
 
 (** Functor to provide set to HTML generation. 
-    Set items are ordered in according to their <b>string representations</b> 
-*)
+    Set items are ordered in according to their <b>string representations</b>. 
+ *)
 module Set (S : Set.S) (V : Element with type t = S.elt) : Element with type t = S.t
 
 (** Functor to provide map to HTML generation. 
-    Set items are ordered in according to their <b>string representations</b> 
-*)
+    Set items are ordered in according to their <b>string representations</b>. 
+ *)
 module Map (M : Map.S) (K : Element with type t = M.key) (V : Element) : Element with type t = V.t M.t
 
 (** Functor to provide hash table to HTML generation. 
-    Set items are ordered in according to their <b>string representations</b> 
-*)
+    Set items are ordered in according to their <b>string representations</b>. 
+ *)
 module Hashtbl (M : Hashtbl.S) (K : Element with type t = M.key) (V : Element) : Element with type t = V.t M.t
 
-(** Functor to provide named pair to HTML generation. The first parameter sets components names *)
+(** Functor to provide named pair to HTML generation. The first parameter sets component names. *)
 module NamedPair (N : sig val first : string val second : string end) (F : Element) (S : Element) : Element with 
   type t = F.t * S.t
 
-(** Functor to provide unnamed pair to HTML generation *)
+(** Functor to provide unnamed pair to HTML generation. *)
 module Pair (F : Element) (S : Element) : Element with type t = F.t * S.t
 
-(** Module to provide raw string HTML generation *)
+(** Module to provide raw string HTML generation. *)
 module Raw : Element with type t = string
 
-(** Module to provide string to HTML generation *)
+(** Module to provide string to HTML generation. *)
 module String :
   sig
 
-    (** Type synonym *)
+    (** Type synonym. *)
     type t = string
 
-    (** HTML viewer *)
+    (** HTML viewer. *)
     val toHTML : string -> string
 
-    (** Synonym for [named] for string values *)
+    (** Synonym for [named] for string values. *)
     val named  : string -> string -> string
 
-    (** Synonym for [fields] for string values *)
+    (** Synonym for [fields] for string values. *)
     val fields : (string * string) list -> string
 
-    (** Synonym for [anchor] for string values *)
+    (** Synonym for [anchor] for string values. *)
     val anchor : string -> string -> string
 
-    (** Synonym for [ref] for string values *)
+    (** Synonym for [ref] for string values. *)
     val ref : string -> string -> string
 
   end
